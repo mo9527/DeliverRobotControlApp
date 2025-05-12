@@ -20,7 +20,9 @@
 			return {
 				grids: [
 				        { name: '货仓门控制', path: '/pages/index/gate' },
-				        { name: '丝杆控制', path: '/pages/index/screwRod' }
+				        { name: '丝杆控制', path: '/pages/index/screwRod' },
+						{ name: '手机端绑定', path: '/pages/index/robotIp' },
+						{ name: '设备自检', path: '/pages/index/devicesCheck' }
 				      ]
 			}
 		},

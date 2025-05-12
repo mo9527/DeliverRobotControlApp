@@ -3,10 +3,10 @@
 		<view class="uni-form-item uni-column">
 			<view class="title">去往的层数</view>
 			<view>
-				<input class="uni-input" type="number" v-model="floor" placeholder="输入要去往的层数" />
+				<input class="uni-input" type="text" v-model="floor" placeholder="输入要去往的层数" />
 			</view>
 			<view class="center-button" @click="moveTo">Go</view>
-			<view class="title">去往的层数</view>
+			<view class="title">货道移动</view>
 			<view class="center-button" @click="cargoMove">货道1开始移动</view>
 		</view>
   </view>

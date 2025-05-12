@@ -17,6 +17,18 @@
 		  "style": {
 			"navigationBarTitleText": "丝杆控制"
 		  }
+		},
+		{
+		  "path": "pages/index/robotIp",
+		  "style": {
+			"navigationBarTitleText": "ip绑定"
+		  }
+		},
+		{
+		  "path": "pages/index/devicesCheck",
+		  "style": {
+			"navigationBarTitleText": "设备自检"
+		  }
 		}
 	],
 	"globalStyle": {
