@@ -5,8 +5,27 @@
 				@click="goToSubPage(index + 1, item.name, item.path)">
 				<text class="menu-text">{{ item.name }}</text>
 			</view>
+		<view class="menu-item" @click="toUploadPic">
+			<image src="/static/screen-display.png" mode="widthFix"></image>
+			<text>屏幕显示</text>
 		</view>
 		<xe-upload ref="XeUpload" :options="{}" @callback="handleUploadCallback"></xe-upload>
+		<view class="menu-item">
+			<image src="/static/open-door.png" mode="widthFix"></image>
+			<text>开舱门</text>
+		</view>
+		<view class="menu-item" @click="doGoodsManager">
+			<image src="/static/goods-manager.png" mode="widthFix"></image>
+			<text>货物管理</text>
+		</view>
+		<view class="menu-item">
+			<image src="/static/self-checking.png" mode="widthFix"></image>
+			<text>设备自检</text>
+		</view>
+		<view class="menu-item">
+			<image src="/static/screen-display.png" mode="widthFix"></image>
+			<text>绑定</text>
+		</view>
 	</view>
 </template>
 
@@ -33,12 +52,32 @@
 					{
 						name: '设备自检',
 						path: '/pages/index/devicesCheck'
-					},
-					{
-						name: '货物管理',
-						path: '/pages/index/cargo'
 					}
 				]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			}
 		},
 		onLoad() {
@@ -47,11 +86,17 @@
 		methods: {
 			handleUploadCallback(res) {
 				console.log(res);
-				var path = plus.io.convertLocalFileSystemURL(res.data[0].tempFilePath)
 				wanyiPlugin.readExcel({
-					"path": path
+					"path": res.data.tempFilePath
 				}, (data) => {
 					console.log(data);
+			doGoodsManager() {
+				uni.navigateTo({
+					url: '/pages/index/goodsManager'
+
+
+
+
 				})
 			},
 			importCargoCode() {
@@ -74,7 +119,7 @@
 						console.log(res.errMsg);
 					}
 				});
-			},
+			}
 			//子页面
 			goToSubPage(index, name, itemPath) {
 				console.log(index, name, itemPath)
@@ -84,12 +129,39 @@
 					})
 					return;
 				}
-				if(index === 1){
-					this.importCargoCode();
-					return;
-				}
+			toUploadPic() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 				uni.navigateTo({
 					url: itemPath + `?id=${index}&name=${encodeURIComponent(name)}`
+					url: '/pages/index/uploadPic'
 				})
 			}
 		}
@@ -97,6 +169,7 @@
 </script>
 
 <style>
+<style lang="scss" scoped>
 	.container {
 		padding: 20rpx;
 	}
@@ -111,6 +184,8 @@
 		background-color: #f0f0f0;
 		height: 200rpx;
 		display: flex;
+		align-items: center;
+		height: 100vh;
 		justify-content: center;
 		align-items: center;
 		border-radius: 10rpx;
@@ -118,15 +193,25 @@
 		font-size: 28rpx;
 		color: #333;
 	}
+		gap: 40rpx;
+		padding: 0 240rpx;
 
 	.grid-item:hover {
 		background-color: #e0e0e0;
 	}
+		.menu-item {
+			font-size: 88rpx;
+			text-align: center;
+			flex: 1;
 
 	.menu-text {
 		text-align: center;
 		word-break: break-all;
 		padding: 10rpx;
+			image {
+				width: 100%;
+			}
+		}
 	}
 
 	.grid-item {
