@@ -16,7 +16,17 @@
       "integrateType": "aar",
       "parameters": {
       },
-      "dependencies": []
+      "dependencies": [
+		  "org.apache.commons:commons-lang3:3.12.0",
+		  "org.apache.commons:commons-collections4:4.4",
+		  "org.apache.poi:poi-ooxml:5.4.0",
+		  "org.apache.poi:poi-scratchpad:5.4.0",
+		  "com.fasterxml:aalto-xml:1.3.0",
+		  "stax:stax-api:1.0.1",
+		  "com.github.felHR85:UsbSerial:4.5.2",
+		  "com.squareup.okhttp3:okhttp:4.9.0",
+		  "org.java-websocket:Java-WebSocket:1.6.0"
+	  ]
     }
   }
 }

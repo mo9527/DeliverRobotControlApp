@@ -3,32 +3,44 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "主菜单"
+				"navigationStyle": "custom"
 			}
 		},
 		{
-		  "path": "pages/index/gate",
-		  "style": {
-			"navigationBarTitleText": "仓门控制"
-		  }
+			"path": "pages/index/gate",
+			"style": {
+				"navigationStyle": "custom"
+			}
 		},
 		{
-		  "path": "pages/index/screwRod",
-		  "style": {
-			"navigationBarTitleText": "丝杆控制"
-		  }
+			"path": "pages/index/screwRod",
+			"style": {
+				"navigationStyle": "custom"
+			}
 		},
 		{
-		  "path": "pages/index/robotIp",
-		  "style": {
-			"navigationBarTitleText": "ip绑定"
-		  }
+			"path": "pages/index/robotIp",
+			"style": {
+				"navigationStyle": "custom"
+			}
 		},
 		{
-		  "path": "pages/index/devicesCheck",
-		  "style": {
-			"navigationBarTitleText": "设备自检"
-		  }
+			"path": "pages/index/devicesCheck",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/index/uploadPic",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/index/goodsManager",
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {
