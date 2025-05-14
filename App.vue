@@ -3,7 +3,7 @@
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
-			wanyiPlugin.startRemoteServer();
+			wanyiPlugin.init();
 		},
 		onShow: function() {
 			console.log('App Show')

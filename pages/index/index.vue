@@ -33,6 +33,10 @@
 					{
 						name: '设备自检',
 						path: '/pages/index/devicesCheck'
+					},
+					{
+						name: '货物管理',
+						path: '/pages/index/cargo'
 					}
 				]
 			}
@@ -43,8 +47,9 @@
 		methods: {
 			handleUploadCallback(res) {
 				console.log(res);
+				var path = plus.io.convertLocalFileSystemURL(res.data[0].tempFilePath)
 				wanyiPlugin.readExcel({
-					"path": res.data.tempFilePath
+					"path": path
 				}, (data) => {
 					console.log(data);
 				})
@@ -69,7 +74,7 @@
 						console.log(res.errMsg);
 					}
 				});
-			}
+			},
 			//子页面
 			goToSubPage(index, name, itemPath) {
 				console.log(index, name, itemPath)
@@ -77,6 +82,10 @@
 					uni.showToast({
 						title: '功能未开放'
 					})
+					return;
+				}
+				if(index === 1){
+					this.importCargoCode();
 					return;
 				}
 				uni.navigateTo({

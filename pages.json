@@ -29,6 +29,13 @@
 		  "style": {
 			"navigationBarTitleText": "设备自检"
 		  }
+		},
+		{
+			"path" : "pages/index/cargo",
+			"style" : 
+			{
+				"navigationBarTitleText" : "货物管理"
+			}
 		}
 	],
 	"globalStyle": {
