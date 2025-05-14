@@ -39,8 +39,8 @@
 				</view>
 				<view class="list-content">
 					<view class="list-item" :class="{'item-active': (index & 1) === 0}" v-for="(item, index) in infoList">
-						<view>打开舱门</view>
-						<view class="time">2023-03-01 17:10:45</view>
+						<view>{{item.description}}</view>
+						<view class="time">{{item.createTime}}</view>
 					</view>
 				</view>
 				<view class="load-more">
