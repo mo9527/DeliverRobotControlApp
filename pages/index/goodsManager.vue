@@ -9,22 +9,22 @@
 				<view>取货记录</view>
 				<view class="count-content">
 					<view class="count-item">
-						<view class="count">0</view>
+						<view class="count">{{cargoLeftTotal}}</view>
 						<view class="count-tip">剩余货物</view>
 					</view>
 					<view class="count-item">
-						<view class="count">0</view>
+						<view class="count">{{codeLeftTotal}}</view>
 						<view class="count-tip">剩余取货码</view>
 					</view>
 					<view class="count-item">
-						<view class="count">0</view>
+						<view class="count">{{cargoTookTotal}}</view>
 						<view class="count-tip">已取货</view>
 					</view>
 				</view>
 				<view class="footer-btn">
 					<view class="footer-tip">导入货物后请务必保证货舱每行数量一致</view>
 					<view class="btn-box">
-						<view class="btn-item">设置货物数量</view>
+						<view class="btn-item" @tap="setCargoQuantity">设置货物数量</view>
 						<view class="btn-item">导入取货码</view>
 					</view>
 				</view>
@@ -49,26 +49,83 @@
 			</view>
 		</view>
 	</view>
+	<!-- 设置货物数量弹窗 -->
+	<u-popup v-model:show="showQuantityPopup" mode="center" :round="10" :closeable="true">
+		<view class="popup-container">
+			<view class="popup-title">设置货物数量</view>
+			<view class="quantity-input">
+				<input class="quantity-input-box" type="number" v-model="cargoQuantity" placeholder="请输入导入货舱每行的货物数量" />
+			</view>
+			<view class="popup-buttons">
+				<view class="popup-btn cancel" @tap="showQuantityPopup = false">取消</view>
+				<view class="popup-btn confirm" @tap="confirmQuantity">确认</view>
+			</view>
+		</view>
+	</u-popup>
+	<xe-upload ref="XeUpload" :options="{}" @callback="handleUploadCallback"></xe-upload>
 </template>
 
 <script>
 	const wanyiPlugin = uni.requireNativePlugin("WanyiUniappPlugins");
+	// import websocket from '@/utils/websocket.js';
 	export default {
 		data() {
 			return {
-				infoList: [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]
+				infoList: [],
+				showQuantityPopup: false,
+				cargoQuantity: 0,
+				codeLeftTotal: 0,
+				cargoLeftTotal: 0,
+				cargoTookTotal: 0,
 			}
 		},
 		onLoad() {
 			this.fetchCargoRecords()
 		},
 		methods: {
+			// 设置货物数量
+			setCargoQuantity() {
+				this.showQuantityPopup = true;
+			},
+			handleUploadCallback(res) {
+				console.log(res);
+				var path = plus.io.convertLocalFileSystemURL(res.data[0].tempFilePath)
+				console.log(path)
+				wanyiPlugin.readExcel({path: path}, (data) => {
+					let codeData = JSON.stringify(data)
+				})
+			},
+			// 确认设置货物数量
+			confirmQuantity() {
+				// 调用API设置货物数量
+				uni.showLoading({
+					title: '设置中...'
+				});
+				
+				wanyiPlugin.restCargoStock({itemTotal: this.cargoQuantity}, (res) => {
+					uni.hideLoading();
+					uni.showToast({
+						title: '设置成功',
+						icon: 'success'
+					});
+					this.showQuantityPopup = false;
+				})
+			},
 			back() {
 				uni.navigateBack()
+			},
+			getCargoStock() {
+				wanyiPlugin.getCargoStock({}, (res) => {
+					console.log(res)
+					this.codeLeftTotal = res.data.codeLeftTotal
+					this.cargoLeftTotal = res.data.cargoLeftTotal
+					this.cargoTookTotal = res.data.cargoTookTotal
+				})
 			},
 			fetchCargoRecords() {
 				wanyiPlugin.getOperationLog({type: ["CARGO_TAKE", "OPEN_GATE"], pageNum: 1}, (res) => {
 					console.log(res)
+					this.infoList = res.data
 				})
 			},
 		}
@@ -76,6 +133,57 @@
 </script>
 
 <style lang="scss" scoped>
+	// 弹窗样式
+	.popup-container {
+		width: 560rpx;
+		padding: 88rpx;
+		
+		.popup-title {
+			font-size: 32rpx;
+			font-weight: bold;
+			text-align: center;
+			margin-bottom: 40rpx;
+		}
+		
+		.quantity-input {
+			display: flex;
+			justify-content: center;
+			margin-bottom: 40rpx;
+	
+			.quantity-input-box {
+				width: 100%;
+				height: 80rpx;
+				background-color: #F4F4F4;
+				border-radius: 12rpx;
+				padding: 8rpx 20rpx;
+			}
+		}
+		
+		.popup-buttons {
+			display: flex;
+			justify-content: space-between;
+			
+			.popup-btn {
+				width: 45%;
+				height: 80rpx;
+				line-height: 80rpx;
+				text-align: center;
+				border-radius: 16rpx;
+				font-size: 28rpx;
+				font-weight: 500;
+			}
+			
+			.cancel {
+				color: #1CAA3B;
+				border: 1px solid #1CAA3B;
+			}
+			
+			.confirm {
+				background-color:  #1CAA3B;
+				color: #FFFFFF;
+			}
+		}
+	}
 	.container {
 		font-size: 72rpx;
 		display: flex;
