@@ -98,7 +98,6 @@
 		justify-content: center;
 		gap: 40rpx;
 		padding: 0 240rpx;
-
 		.menu-item {
 			font-size: 88rpx;
 			text-align: center;
