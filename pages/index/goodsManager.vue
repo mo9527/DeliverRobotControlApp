@@ -97,7 +97,8 @@
 				codeLeftTotal: 0,
 				cargoLeftTotal: 0,
 				cargoTookTotal: 0,
-				listHeight: 0
+				listHeight: 0,
+				importType: 0
 			}
 		},
 		onLoad() {
@@ -120,6 +121,7 @@
 			// 处理导入选项
 			handleImportOption(index) {
 				console.log('选中了第' + (index + 1) + '个按钮');
+				this.importType = index + 1;
 				if (index === 0) {
 					this.$refs.XeUpload.upload('file', {});
 				} else if (index === 1) {
@@ -155,7 +157,7 @@
 				console.log(res);
 				var path = plus.io.convertLocalFileSystemURL(res.data[0].tempFilePath)
 				console.log(path)
-				wanyiPlugin.readExcel({path: path}, (data) => {
+				wanyiPlugin.importPickupCode({path: path, type: this.importType}, (data) => {
 					let codeData = JSON.stringify(data)
 				})
 			},
