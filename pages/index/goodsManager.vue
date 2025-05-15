@@ -2,11 +2,10 @@
 	<view class="container">
 		<view class="title" @click="back">
 			<image src="/static/back.png" style="width: 120rpx;margin-right: 32rpx;" mode="widthFix"></image>
-			<text>屏幕显示</text>
+			<text>货物管理</text>
 		</view>
 		<view class="content">
 			<view class="content-item" style="width: 60%;">
-				<view>取货记录</view>
 				<view class="count-content">
 					<view class="count-item">
 						<view class="count">{{cargoLeftTotal}}</view>
@@ -24,8 +23,8 @@
 				<view class="footer-btn">
 					<view class="footer-tip">导入货物后请务必保证货舱每行数量一致</view>
 					<view class="btn-box">
-						<view class="btn-item" @tap="setCargoQuantity">设置货物数量</view>
-						<view class="btn-item">导入取货码</view>
+						<view class="btn-item" @tap="setCargoQuantity">重置货舱</view>
+						<view class="btn-item" @tap="importCargoCode">导入取货码</view>
 					</view>
 				</view>
 			</view>
@@ -33,19 +32,16 @@
 				<view class="record-title">
 					<view>取货记录</view>
 					<view class="title-btn">
-						<view class="refresh-btn">刷新</view>
-						<view class="clear-btn">清空记录</view>
+						<view class="refresh-btn" @click="doRefresh">刷新</view>
+						<view class="clear-btn" @click="doClear">清空记录</view>
 					</view>
 				</view>
-				<view class="list-content">
+				<scroll-view @scrolltolower="doGetMore" :scroll-y="true" class="list-content" :style="{height: listHeight + 'px'}">
 					<view class="list-item" :class="{'item-active': (index & 1) === 0}" v-for="(item, index) in infoList">
 						<view>{{item.description}}</view>
 						<view class="time">{{item.createTime}}</view>
 					</view>
-				</view>
-				<view class="load-more">
-					加载更多
-				</view>
+				</scroll-view>
 			</view>
 		</view>
 	</view>
@@ -62,6 +58,28 @@
 			</view>
 		</view>
 	</u-popup>
+	
+	<!-- 导入取货码弹窗 -->
+	<u-popup v-model:show="showImportPopup" mode="center" :round="10" :closeable="true">
+		<view class="import-code-popup">
+			<view class="popup-title">导入取货码</view>
+			<view class="import-options">
+				<view class="option-item option-change" @tap="handleImportOption(0)">
+					<view class="option-name">重新导入</view>
+					<view class="option-desc">更换取货码</view>
+				</view>
+				<view class="option-item option-add" @tap="handleImportOption(1)">
+					<view class="option-name">追加导入</view>
+					<view class="option-desc">增加取货码</view>
+				</view>
+				<view class="option-item option-clear" @tap="handleImportOption(2)">
+					<view class="option-name">清空取货码</view>
+				</view>
+			</view>
+			<view class="cancel-btn" @tap="showImportPopup = false">取消</view>
+		</view>
+	</u-popup>
+	
 	<xe-upload ref="XeUpload" :options="{}" @callback="handleUploadCallback"></xe-upload>
 </template>
 
@@ -71,18 +89,64 @@
 	export default {
 		data() {
 			return {
+				pageNum: 1,
 				infoList: [],
 				showQuantityPopup: false,
+				showImportPopup: false,
 				cargoQuantity: 0,
 				codeLeftTotal: 0,
 				cargoLeftTotal: 0,
 				cargoTookTotal: 0,
+				listHeight: 0
 			}
 		},
 		onLoad() {
 			this.fetchCargoRecords()
+			this.getCargoStock()
+			let that = this
+			uni.getSystemInfo({
+				success(res) {
+					console.log(res);
+					that.listHeight = res.windowHeight - 390
+					that.$forceUpdate()
+				}
+			})
 		},
 		methods: {
+			// 导入取货码
+			importCargoCode() {
+				this.showImportPopup = true;
+			},
+			// 处理导入选项
+			handleImportOption(index) {
+				console.log('选中了第' + (index + 1) + '个按钮');
+				if (index === 0) {
+					this.$refs.XeUpload.upload('file', {});
+				} else if (index === 1) {
+					// 追加导入逻辑
+					// 可以添加确认弹窗或直接调用上传
+					this.$refs.XeUpload.upload('file', {append: true});
+				} else if (index === 2) {
+					// 清空取货码逻辑
+					uni.showModal({
+						title: '提示',
+						content: '确定要清空所有取货码吗？',
+						success: (res) => {
+							if (res.confirm) {
+								// 调用清空API
+								wanyiPlugin.clearCargoCodes({}, (res) => {
+									uni.showToast({
+										title: '清空成功',
+										icon: 'success'
+									});
+									this.getCargoStock();
+								});
+							}
+						}
+					});
+				}
+				this.showImportPopup = false;
+			},
 			// 设置货物数量
 			setCargoQuantity() {
 				this.showQuantityPopup = true;
@@ -109,6 +173,7 @@
 						icon: 'success'
 					});
 					this.showQuantityPopup = false;
+					this.getCargoStock()
 				})
 			},
 			back() {
@@ -122,10 +187,22 @@
 					this.cargoTookTotal = res.data.cargoTookTotal
 				})
 			},
+			doClear() {
+				
+			},
+			doRefresh() {
+				this.pageNum = 1
+				this.infoList = []
+				this.fetchCargoRecords()
+			},
+			doGetMore() {
+				this.pageNum++
+				this.fetchCargoRecords()
+			},
 			fetchCargoRecords() {
-				wanyiPlugin.getOperationLog({type: ["CARGO_TAKE", "OPEN_GATE"], pageNum: 1}, (res) => {
+				wanyiPlugin.getOperationLog({type: ["CARGO_TAKE", "OPEN_GATE"], pageNum: this.pageNum}, (res) => {
 					console.log(res)
-					this.infoList = res.data
+					this.infoList = this.infoList.concat(res.data || [])
 				})
 			},
 		}
@@ -184,6 +261,74 @@
 			}
 		}
 	}
+	
+	// 导入取货码弹窗样式
+	.import-code-popup {
+		// width: 1200rpx;
+		padding: 20rpx;
+		background-color: #fff;
+		border-radius: 48rpx;
+		
+		.popup-title {
+			font-size: 64rpx;
+			text-align: center;
+			font-weight: bold;
+			margin-bottom: 60rpx;
+		}
+		
+		.import-options {
+			display: flex;
+			justify-content: space-around;
+			margin-bottom: 60rpx;
+			
+			.option-change {
+				background: url('/static/add-import.png') no-repeat;
+				background-size: 400rpx 340rpx;
+			}
+			
+			.option-add {
+				background: url('/static/import.png') no-repeat;
+				background-size: 400rpx 340rpx;
+			}
+			
+			.option-clear {
+				background: url('/static/clear-code.png') no-repeat;
+				background-size: 400rpx 340rpx;
+			}
+			
+			.option-item {
+				width: 400rpx;
+				height: 340rpx;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				margin: 40rpx;
+				text-align: center;
+				
+				.option-name {
+					font-size: 48rpx;
+					margin-bottom: 10rpx;
+				}
+				
+				.option-desc {
+					font-size: 32rpx;
+					color: #999;
+				}
+			}
+		}
+		
+		.cancel-btn {
+			width: 100%;
+			height: 100rpx;
+			line-height: 100rpx;
+			text-align: center;
+			font-size: 48rpx;
+			color: #07c160;
+			border-top: 1px solid #eee;
+		}
+	}
+	
 	.container {
 		font-size: 72rpx;
 		display: flex;
@@ -206,20 +351,17 @@
 			align-items: center;
 			justify-content: space-between;
 			gap: 80rpx;
-			margin: 88rpx 0;
+			// margin: 88rpx 0;
 			
 			.content-record {
 				width: 100%;
-				display: flex;
+				// display: flex;
 				background-color: #fff;
 				border-radius: 64rpx;
 				padding: 88rpx;
-				justify-content: space-between;
-				height: 100%;
-				flex-direction: column;
+				height: calc(100% - 196rpx);
 				
 				.list-content {
-					height: 1142rpx;
 					overflow: auto;
 					
 					.item-active {
@@ -241,19 +383,12 @@
 					}
 				}
 				
-				.load-more {
-					align-self: center;
-					background: #F2FAF3;
-					border-radius: 32rpx;
-					color: #1CAA3B;
-					font-size: 56rpx;
-					padding: 36rpx 180rpx;
-				}
 				
 				.record-title {
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
+					margin-bottom: 56rpx;
 					
 					.title-btn {
 						display: flex;
@@ -283,7 +418,7 @@
 				border-radius: 64rpx;
 				width: 100%;
 				padding: 88rpx;
-				height: 100%;
+				height: calc(100% - 196rpx);
 				
 				.footer-btn {
 					position: absolute;
@@ -306,7 +441,7 @@
 							border-radius: 32rpx;
 							padding: 36rpx;
 							color: #fff;
-							font-size: 56rpx;
+							font-size: 48rpx;
 							flex: 1;
 						}
 					}
@@ -316,7 +451,7 @@
 					display: flex;
 					align-items: center;
 					gap: 50rpx;
-					margin-top: 88rpx;
+					// margin-top: 88rpx;
 					
 					.count-item {
 						background: #F4F4F4;
@@ -335,8 +470,6 @@
 							color: #999999;
 						}
 					}
-					
-					
 				}
 			}
 		}
