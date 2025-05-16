@@ -86,6 +86,8 @@
 </template>
 
 <script>
+import icon from '../../uni_modules/uview-plus/components/u-icon/icon';
+
 	const wanyiPlugin = uni.requireNativePlugin("WanyiUniappPlugins");
 	// import websocket from '@/utils/websocket.js';
 	export default {
@@ -185,11 +187,23 @@
 				wanyiPlugin.restCargoStock({
 					itemTotal: this.cargoQuantity
 				}, (res) => {
+					console.log("重置货舱数量返回", res)
 					uni.hideLoading();
-					uni.showToast({
-						title: '设置成功',
-						icon: 'success'
-					});
+					if (res.status === 0){
+						uni.showToast({
+							title: '设置成功',
+							icon: 'success'
+						});
+					}else {
+						console.log(res.message)
+						uni.showToast({
+							title: res.message,
+							icon: 'none',
+							duration: 2500
+						})
+					}
+					
+					
 					this.showQuantityPopup = false;
 					this.getCargoStock()
 				})
