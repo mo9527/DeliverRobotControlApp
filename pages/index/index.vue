@@ -16,7 +16,7 @@
 			<image src="/static/self-checking.png" mode="widthFix"></image>
 			<text>设备自检</text>
 		</view>
-		<view class="menu-item">
+		<view class="menu-item" @click="doBind">
 			<image src="/static/screen-display.png" mode="widthFix"></image>
 			<text>手机绑定</text>
 		</view>
@@ -32,6 +32,13 @@
 			</view>
 		</view>
 	</u-popup>
+	
+	<u-popup round="48" v-model:show="bindCodePopup" mode="center" @close="closeSelfCheckPopup" width="100%">
+		<view class="self-check-popup" style="width: 800rpx;display: flex;align-items: center;justify-content: center;flex-direction: column;">
+			<view class="popup-title">二维码绑定</view>
+			<uqrcode ref="qrcode" canvas-id="qrcode" :value="qrValue" style="width: 200px; height: 200px;"></uqrcode>
+		</view>
+	</u-popup>
 </template>
 
 <script>
@@ -39,6 +46,8 @@
 	export default {
 		data() {
 			return {
+				qrValue: '',
+				bindCodePopup: false,
 				showSelfCheckPopup: false,
 				checkItems: []
 			}
@@ -47,6 +56,13 @@
 
 		},
 		methods: {
+			doBind() {
+				wanyiPlugin.getRobotIp({}, (res) => {
+					console.log(res)
+					this.qrValue = JSON.stringify(res);
+					this.bindCodePopup = true
+				})
+			},
 			getStatus(item) {
 				if (item.status === 'NORMAL') {
 					return '正常'

@@ -36,8 +36,10 @@
 						<view class="clear-btn" @click="doClear">清空记录</view>
 					</view>
 				</view>
-				<scroll-view @scrolltolower="doGetMore" :scroll-y="true" class="list-content" :style="{height: listHeight + 'px'}">
-					<view class="list-item" :class="{'item-active': (index & 1) === 0}" v-for="(item, index) in infoList">
+				<scroll-view @scrolltolower="doGetMore" :scroll-y="true" class="list-content"
+					:style="{height: listHeight + 'px'}">
+					<view class="list-item" :class="{'item-active': (index & 1) === 0}"
+						v-for="(item, index) in infoList">
 						<view>{{item.description}}</view>
 						<view class="time">{{item.createTime}}</view>
 					</view>
@@ -58,7 +60,7 @@
 			</view>
 		</view>
 	</u-popup>
-	
+
 	<!-- 导入取货码弹窗 -->
 	<u-popup v-model:show="showImportPopup" mode="center" :round="10" :closeable="true">
 		<view class="import-code-popup">
@@ -79,7 +81,7 @@
 			<view class="cancel-btn" @tap="showImportPopup = false">取消</view>
 		</view>
 	</u-popup>
-	
+
 	<xe-upload ref="XeUpload" :options="{}" @callback="handleUploadCallback"></xe-upload>
 </template>
 
@@ -127,7 +129,9 @@
 				} else if (index === 1) {
 					// 追加导入逻辑
 					// 可以添加确认弹窗或直接调用上传
-					this.$refs.XeUpload.upload('file', {append: true});
+					this.$refs.XeUpload.upload('file', {
+						append: true
+					});
 				} else if (index === 2) {
 					// 清空取货码逻辑
 					uni.showModal({
@@ -156,9 +160,19 @@
 			handleUploadCallback(res) {
 				console.log(res);
 				var path = plus.io.convertLocalFileSystemURL(res.data[0].tempFilePath)
-				console.log(path)
-				wanyiPlugin.importPickupCode({path: path, type: this.importType}, (data) => {
+				let that = this
+				wanyiPlugin.importPickupCode({
+					path: path,
+					type: this.importType
+				}, (data) => {
 					let codeData = JSON.stringify(data)
+					if (res.status !== 0) {
+						uni.showToast({
+							title: res.message
+						})
+					} else {
+						that.getCargoStock()
+					}
 				})
 			},
 			// 确认设置货物数量
@@ -167,8 +181,10 @@
 				uni.showLoading({
 					title: '设置中...'
 				});
-				
-				wanyiPlugin.restCargoStock({itemTotal: this.cargoQuantity}, (res) => {
+
+				wanyiPlugin.restCargoStock({
+					itemTotal: this.cargoQuantity
+				}, (res) => {
 					uni.hideLoading();
 					uni.showToast({
 						title: '设置成功',
@@ -190,7 +206,7 @@
 				})
 			},
 			doClear() {
-				
+
 			},
 			doRefresh() {
 				this.pageNum = 1
@@ -202,7 +218,10 @@
 				this.fetchCargoRecords()
 			},
 			fetchCargoRecords() {
-				wanyiPlugin.getOperationLog({type: ["CARGO_TAKE", "OPEN_GATE"], pageNum: this.pageNum}, (res) => {
+				wanyiPlugin.getOperationLog({
+					type: ["CARGO_TAKE", "OPEN_GATE"],
+					pageNum: this.pageNum
+				}, (res) => {
 					console.log(res)
 					this.infoList = this.infoList.concat(res.data || [])
 				})
@@ -216,19 +235,19 @@
 	.popup-container {
 		width: 560rpx;
 		padding: 88rpx;
-		
+
 		.popup-title {
 			font-size: 32rpx;
 			font-weight: bold;
 			text-align: center;
 			margin-bottom: 40rpx;
 		}
-		
+
 		.quantity-input {
 			display: flex;
 			justify-content: center;
 			margin-bottom: 40rpx;
-	
+
 			.quantity-input-box {
 				width: 100%;
 				height: 80rpx;
@@ -237,11 +256,11 @@
 				padding: 8rpx 20rpx;
 			}
 		}
-		
+
 		.popup-buttons {
 			display: flex;
 			justify-content: space-between;
-			
+
 			.popup-btn {
 				width: 45%;
 				height: 80rpx;
@@ -251,53 +270,53 @@
 				font-size: 28rpx;
 				font-weight: 500;
 			}
-			
+
 			.cancel {
 				color: #1CAA3B;
 				border: 1px solid #1CAA3B;
 			}
-			
+
 			.confirm {
-				background-color:  #1CAA3B;
+				background-color: #1CAA3B;
 				color: #FFFFFF;
 			}
 		}
 	}
-	
+
 	// 导入取货码弹窗样式
 	.import-code-popup {
 		// width: 1200rpx;
 		padding: 20rpx;
 		background-color: #fff;
 		border-radius: 48rpx;
-		
+
 		.popup-title {
 			font-size: 64rpx;
 			text-align: center;
 			font-weight: bold;
 			margin-bottom: 60rpx;
 		}
-		
+
 		.import-options {
 			display: flex;
 			justify-content: space-around;
 			margin-bottom: 60rpx;
-			
+
 			.option-change {
 				background: url('/static/add-import.png') no-repeat;
 				background-size: 400rpx 340rpx;
 			}
-			
+
 			.option-add {
 				background: url('/static/import.png') no-repeat;
 				background-size: 400rpx 340rpx;
 			}
-			
+
 			.option-clear {
 				background: url('/static/clear-code.png') no-repeat;
 				background-size: 400rpx 340rpx;
 			}
-			
+
 			.option-item {
 				width: 400rpx;
 				height: 340rpx;
@@ -307,19 +326,19 @@
 				justify-content: center;
 				margin: 40rpx;
 				text-align: center;
-				
+
 				.option-name {
 					font-size: 48rpx;
 					margin-bottom: 10rpx;
 				}
-				
+
 				.option-desc {
 					font-size: 32rpx;
 					color: #999;
 				}
 			}
 		}
-		
+
 		.cancel-btn {
 			width: 100%;
 			height: 100rpx;
@@ -330,7 +349,7 @@
 			border-top: 1px solid #eee;
 		}
 	}
-	
+
 	.container {
 		font-size: 72rpx;
 		display: flex;
@@ -340,13 +359,13 @@
 		height: calc(100vh - 192rpx);
 		background: url('/static/page-bg.png') no-repeat;
 		background-size: 100% 100%;
-		
+
 		.title {
 			display: flex;
 			align-items: center;
 			margin-bottom: 88rpx;
 		}
-		
+
 		.content {
 			flex: 1;
 			display: flex;
@@ -354,7 +373,7 @@
 			justify-content: space-between;
 			gap: 80rpx;
 			// margin: 88rpx 0;
-			
+
 			.content-record {
 				width: 100%;
 				// display: flex;
@@ -362,48 +381,48 @@
 				border-radius: 64rpx;
 				padding: 88rpx;
 				height: calc(100% - 196rpx);
-				
+
 				.list-content {
 					overflow: auto;
-					
+
 					.item-active {
 						background: #F4F4F4;
 						border-radius: 24rpx;
 					}
-					
+
 					.list-item {
 						display: flex;
 						align-items: center;
 						justify-content: space-between;
 						font-size: 48rpx;
 						padding: 40rpx 64rpx;
-						
-						
+
+
 						.time {
 							color: #999;
 						}
 					}
 				}
-				
-				
+
+
 				.record-title {
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
 					margin-bottom: 56rpx;
-					
+
 					.title-btn {
 						display: flex;
 						gap: 32rpx;
 						font-size: 48rpx;
-						
+
 						.refresh-btn {
 							color: #1CAA3B;
 							background-color: #F2FAF3;
 							padding: 24rpx 50rpx;
 							border-radius: 32rpx;
 						}
-						
+
 						.clear-btn {
 							background: #FFEAE8;
 							padding: 24rpx 50rpx;
@@ -413,7 +432,7 @@
 					}
 				}
 			}
-			
+
 			.content-item {
 				position: relative;
 				background-color: #fff;
@@ -421,22 +440,22 @@
 				width: 100%;
 				padding: 88rpx;
 				height: calc(100% - 196rpx);
-				
+
 				.footer-btn {
 					position: absolute;
 					bottom: 88rpx;
 					width: calc(100% - 176rpx);
-					
+
 					.footer-tip {
 						font-size: 40rpx;
 						color: #FF472F;
 						margin-bottom: 48rpx;
 					}
-					
+
 					.btn-box {
 						display: flex;
 						gap: 48rpx;
-						
+
 						.btn-item {
 							text-align: center;
 							background: #1CAA3B;
@@ -448,25 +467,25 @@
 						}
 					}
 				}
-				
+
 				.count-content {
 					display: flex;
 					align-items: center;
 					gap: 50rpx;
 					// margin-top: 88rpx;
-					
+
 					.count-item {
 						background: #F4F4F4;
 						border-radius: 56rpx;
 						text-align: center;
 						flex: 1;
 						padding: 64rpx 0;
-						
+
 						.count {
 							font-size: 120rpx;
 							font-weight: bold;
 						}
-						
+
 						.count-tip {
 							font-size: 40rpx;
 							color: #999999;
