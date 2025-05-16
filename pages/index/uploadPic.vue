@@ -150,7 +150,7 @@
 				border-radius: 64rpx;
 				width: 100%;
 				padding: 62rpx;
-				// height: 100%;
+				height: calc(100% - 160rpx);
 				
 				.upload {
 					display: flex;
