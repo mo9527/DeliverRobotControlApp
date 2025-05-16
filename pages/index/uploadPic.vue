@@ -1,6 +1,6 @@
 <template>
-	<view class="container">
-		<template v-if="!isInApplication">
+	<view class="container" :style="{width: windowWidth - 72 +'px',height: windowHeight - 72 + 'px'}">
+		<view class="container-content" v-if="!isInApplication">
 			<view class="title" @click="back">
 				<image src="/static/back.png" style="width: 120rpx;margin-right: 32rpx;" mode="widthFix"></image>
 				<text>屏幕显示</text>
@@ -11,7 +11,7 @@
 					<view class="upload">
 						<view @click="doUpload('up')">
 							<view class="upload-icon">
-								<u-icon size="120" color="#1CAA3B" name="plus"></u-icon>
+								<u-icon size="80" color="#1CAA3B" name="plus"></u-icon>
 							</view>
 							<view style="margin-top: 32rpx;">建议尺寸：1920*1080</view>
 						</view>
@@ -23,7 +23,7 @@
 					<view class="upload">
 						<view @click="doUpload('down')">
 							<view class="upload-icon">
-								<u-icon size="120" color="#1CAA3B" name="plus"></u-icon>
+								<u-icon size="80" color="#1CAA3B" name="plus"></u-icon>
 							</view>
 							<view style="margin-top: 32rpx;">建议尺寸：1920*1080</view>
 						</view>
@@ -32,7 +32,7 @@
 				</view>
 			</view>
 			<view class="footer-btn" @click="isInApplication = true">应用</view>
-		</template>
+		</view>
 		<view v-if="isInApplication" class="application-screen">
 			<image @click="closeImage" :src="upPic"></image>
 			<view class="close" v-if="closeIcon" @click="isInApplication = false">
@@ -49,8 +49,20 @@
 				upPic: '',
 				downPic: '',
 				isInApplication: false,
-				closeIcon: false
+				closeIcon: false,
+				windowWidth: 0,
+				windowHeight: 0
 			}
+		},
+		onLoad() {
+			let that = this
+			uni.getSystemInfo({
+				success(res) {
+					that.windowWidth = res.windowWidth
+					that.windowHeight = res.windowHeight
+					that.$forceUpdate()
+				}
+			})
 		},
 		methods: {
 			back() {
@@ -99,14 +111,17 @@
 	}
 	
 	.container {
-		font-size: 80rpx;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		padding: 96rpx;
-		height: calc(100vh - 192rpx);
+		font-size: 60rpx;
+		padding: 36px;
 		background: url('/static/page-bg.png') no-repeat;
 		background-size: 100% 100%;
+		
+		.container-content {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			justify-content: space-between;
+		}
 		
 		.footer-btn {
 			padding: 36rpx 180rpx;
@@ -114,42 +129,41 @@
 			border-radius: 32rpx;
 			color: #fff;
 			align-self: center;
-			margin-top: 88rpx;
+			margin-top: 60rpx;
 		}
 		
 		.title {
 			display: flex;
 			align-items: center;
-			margin-bottom: 88rpx;
+			margin-bottom: 60rpx;
 		}
 		
 		.content {
-			flex: 1;
+			height: 100%;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 			gap: 80rpx;
-			margin: 88rpx 0;
 			
 			.content-item {
 				background-color: #fff;
 				border-radius: 64rpx;
 				width: 100%;
-				padding: 88rpx;
-				height: 100%;
+				padding: 62rpx;
+				// height: 100%;
 				
 				.upload {
 					display: flex;
 					align-items: center;
-					font-size: 56rpx;
+					font-size: 32rpx;
 					color: #999;
 					text-align: center;
 					
 					.upload-icon {
 						margin-top: 88rpx;
 						border: 8rpx solid #77CC89;
-						width: 600rpx;
-						height: 600rpx;
+						width: 300rpx;
+						height: 300rpx;
 						border-radius: 56rpx;
 						display: flex;
 						align-items: center;
@@ -161,7 +175,8 @@
 					}
 					
 					image {
-						height: 600rpx;
+						height: 300rpx;
+						width: 300rpx;
 						border-radius: 56rpx;
 					}
 				}

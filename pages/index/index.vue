@@ -42,7 +42,7 @@
 </template>
 
 <script>
-	const wanyiPlugin = uni.requireNativePlugin("WanyiUniappPlugins");
+	// const wanyiPlugin = uni.requireNativePlugin("WanyiUniappPlugins");
 	export default {
 		data() {
 			return {
@@ -122,7 +122,7 @@
 		gap: 40rpx;
 		padding: 0 240rpx;
 		.menu-item {
-			font-size: 88rpx;
+			font-size: 68rpx;
 			text-align: center;
 			flex: 1;
 

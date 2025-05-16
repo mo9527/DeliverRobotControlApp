@@ -1,9 +1,9 @@
 <script>
-	var wanyiPlugin = uni.requireNativePlugin('WanyiUniappPlugins')
+	// var wanyiPlugin = uni.requireNativePlugin('WanyiUniappPlugins')
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
-			wanyiPlugin.init();
+			// wanyiPlugin.init();
 		},
 		onShow: function() {
 			console.log('App Show')
