@@ -18,7 +18,7 @@
 		</view>
 		<view class="menu-item">
 			<image src="/static/screen-display.png" mode="widthFix"></image>
-			<text>绑定</text>
+			<text>手机绑定</text>
 		</view>
 	</view>
 	
@@ -56,11 +56,18 @@
 					return '设备未连接'
 				}
 			},
-			doSelfChecking() {
+			async doSelfChecking() {
+				uni.showLoading({
+					title: '设备检测中',
+					mask: true
+				})
+				await new Promise(resolve => setTimeout(resolve, 3000));
 				wanyiPlugin.devicesCheck({}, (res) => {
 					console.log('检查结果返回：', res.data)
 					this.checkItems = res.data
 					this.showSelfCheckPopup = true;
+					
+					uni.hideLoading();
 				});
 				
 			},

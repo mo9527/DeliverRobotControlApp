@@ -21,7 +21,7 @@
 					</view>
 				</view>
 				<view class="footer-btn">
-					<view class="footer-tip">导入货物后请务必保证货舱每行数量一致</view>
+					<view class="footer-tip">请务必保证每层货舱数量一致</view>
 					<view class="btn-box">
 						<view class="btn-item" @tap="setCargoQuantity">重置货舱</view>
 						<view class="btn-item" @tap="importCargoCode">导入取货码</view>
@@ -48,7 +48,7 @@
 	<!-- 设置货物数量弹窗 -->
 	<u-popup v-model:show="showQuantityPopup" mode="center" :round="10" :closeable="true">
 		<view class="popup-container">
-			<view class="popup-title">设置货物数量</view>
+			<view class="popup-title">设置每层货物数量</view>
 			<view class="quantity-input">
 				<input class="quantity-input-box" type="number" v-model="cargoQuantity" placeholder="请输入导入货舱每行的货物数量" />
 			</view>
