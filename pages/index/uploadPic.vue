@@ -1,5 +1,5 @@
 <template>
-	<view class="container" :style="{width: windowWidth - 72 +'px',height: windowHeight - 72 + 'px'}">
+	<view class="container" :style="{width: windowWidth - 72 +'px',height: windowHeight - 72 + 'px',padding: isInApplication ? 0 : '36px'}">
 		<view class="container-content" v-if="!isInApplication">
 			<view class="title" @click="back">
 				<image src="/static/back.png" style="width: 120rpx;margin-right: 32rpx;" mode="widthFix"></image>
@@ -96,7 +96,7 @@
 
 <style lang="scss" scoped>
 	.application-screen {
-		margin: -96rpx;
+		// padding: -72px;
 		
 		image {
 			width: 100vw;
@@ -112,7 +112,6 @@
 	
 	.container {
 		font-size: 60rpx;
-		padding: 36px;
 		background: url('/static/page-bg.png') no-repeat;
 		background-size: 100% 100%;
 		
