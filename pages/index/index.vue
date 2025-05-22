@@ -20,6 +20,10 @@
 			<image src="/static/screen-display.png" mode="widthFix"></image>
 			<text>手机绑定</text>
 		</view>
+		<view class="menu-item" @click="doTest">
+			<image src="/static/screen-display.png" mode="widthFix"></image>
+			<text>测试出货</text>
+		</view>
 	</view>
 	
 	<!-- 设备自检弹窗 -->
@@ -56,6 +60,11 @@
 
 		},
 		methods: {
+			doTest() {
+				uni.navigateTo({
+					url: '/pages/index/screwRod'
+				})
+			},
 			doBind() {
 				wanyiPlugin.getRobotIp({}, (res) => {
 					console.log(res)
