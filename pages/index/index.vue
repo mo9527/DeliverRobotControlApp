@@ -66,8 +66,12 @@
 				})
 			},
 			doBind() {
+				uni.showLoading({
+					title: '设置中'
+				})
 				wanyiPlugin.getRobotIp({}, (res) => {
 					console.log(res)
+					uni.hideLoading()
 					this.qrValue = JSON.stringify(res);
 					this.bindCodePopup = true
 				})
