@@ -31,7 +31,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="footer-btn" @click="isInApplication = true">应用</view>
+			<view class="footer-btn" @click="doApplication">应用</view>
 		</view>
 		<view v-if="isInApplication" class="application-screen">
 			<image @click="closeImage" :src="upPic"></image>
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+	const wanyiPlugin = uni.requireNativePlugin("WanyiUniappPlugins");
 	export default {
 		data() {
 			return {
@@ -67,6 +68,16 @@
 		methods: {
 			back() {
 				uni.navigateBack()
+			},
+			doApplication() {
+				isInApplication = true
+				let data = {
+					screen1: this.upPic,
+					screen2: this.downPic,
+				}
+				wanyiPlugin.setDualScreen(data, (res) => {
+					
+				})
 			},
 			closeImage() {
 				this.closeIcon = true
