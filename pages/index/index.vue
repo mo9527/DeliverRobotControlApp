@@ -46,7 +46,7 @@
 </template>
 
 <script>
-	// const wanyiPlugin = uni.requireNativePlugin("WanyiUniappPlugins");
+	const wanyiPlugin = uni.requireNativePlugin("WanyiUniappPlugins");
 	export default {
 		data() {
 			return {
